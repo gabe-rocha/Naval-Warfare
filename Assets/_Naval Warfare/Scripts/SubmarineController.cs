@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Transactions;
@@ -67,26 +68,32 @@ public class SubmarineController : MonoBehaviour {
 #region Private Methods
     private void MoveForwardBackwards() {
         if(verInput > 0 && RigidBody.velocity.z < maxSpeedForward) {
-            RigidBody.AddForce(Vector3.forward * accelerationVelocity * verInput, ForceMode.Acceleration); //Move Forward
+            RigidBody.AddForce(transform.forward * accelerationVelocity * verInput, ForceMode.Acceleration); //Move Forward
         } else if(verInput < 0 && RigidBody.velocity.z > maxSpeedBackward) {
-            RigidBody.AddForce(Vector3.forward * decelerationVelocity * verInput, ForceMode.Acceleration); //Move Backwards
+            RigidBody.AddForce(transform.forward * decelerationVelocity * verInput, ForceMode.Acceleration); //Move Backwards
         }
     }
 
     private void MoveUpDown() {
         if(submergeInput > 0 && RigidBody.velocity.y < maxSubmersionSpeed) {
-            RigidBody.AddForce(Vector3.up * accelerationSurmersion * submergeInput, ForceMode.Acceleration); //Move Forward
+            RigidBody.AddForce(transform.up * accelerationSurmersion * submergeInput, ForceMode.Acceleration); //Move Forward
         } else if(submergeInput < 0 && RigidBody.velocity.y > -maxSubmersionSpeed) {
-            RigidBody.AddForce(Vector3.up * accelerationSurmersion * submergeInput, ForceMode.Acceleration); //Move Backwards
+            RigidBody.AddForce(transform.up * accelerationSurmersion * submergeInput, ForceMode.Acceleration); //Move Backwards
         }
     }
 
     private void Rotate() {
         if(horInput > 0 && RigidBody.angularVelocity.y < maxAngularVelocityY) {
+            // transform.Rotate(Vector3.up * accelerationAngularVelocityY * horInput * Time.deltaTime);
             RigidBody.AddForceAtPosition(-turnRudder.transform.right * accelerationAngularVelocityY * horInput * Time.deltaTime, turnRudder.position, ForceMode.Acceleration); //Rotate Clockwise
         } else if(horInput < 0 && RigidBody.angularVelocity.y > -maxAngularVelocityY) {
+            // transform.Rotate(Vector3.up * accelerationAngularVelocityY * horInput * Time.deltaTime);
             RigidBody.AddForceAtPosition(turnRudder.transform.right * accelerationAngularVelocityY * horInput * -1f * Time.deltaTime, turnRudder.position, ForceMode.Acceleration); //Rotate Clockwise
         }
+        var rotation = transform.rotation;
+        rotation.x = 0;
+        rotation.z = 0;
+        transform.rotation = rotation;
     }
 
     private void ParticleEffectsSubmersion() {
@@ -113,16 +120,12 @@ public class SubmarineController : MonoBehaviour {
 
 #endregion
 
+#if UNITY_EDITOR
     void OnGUI() {
-        GUI.skin.label.fontSize = Screen.width / 100;
+        GUI.skin.label.fontSize = Screen.width / 75;
         GUI.skin.label.normal.textColor = Color.magenta;
         GUILayout.Label($"Velocity: {RigidBody.velocity}");
         GUILayout.Label($"Ang Velocity: {RigidBody.angularVelocity}");
     }
-    //protected void OnGUI()
-    //{
-    //    GUI.skin.label.fontSize = Screen.width / 100;
-    //    GUI.skin.label.normal.textColor = Color.magenta;
-    //    GUILayout.Label("Device id: " + "Step");
-    //}
+#endif
 }

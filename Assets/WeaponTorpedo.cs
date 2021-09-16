@@ -14,12 +14,14 @@ public class WeaponTorpedo : MonoBehaviour {
 #region Private Serializable Fields
     [SerializeField] private float speed = 30f;
     [SerializeField] private GameObject explosionPrefab;
+    [SerializeField] float lifeTimeInSecs = 60f;
 #endregion
 
 #region Private Fields
     private Transform target;
     private Vector3 targetPositionRecalc;
     private bool isTargetAcquired;
+    private float launchTime;
 #endregion
 
 #region MonoBehaviour CallBacks
@@ -28,6 +30,7 @@ public class WeaponTorpedo : MonoBehaviour {
     }
 
     void Start() {
+        launchTime = Time.time;
         AcquireTarget();
     }
 
@@ -42,16 +45,28 @@ public class WeaponTorpedo : MonoBehaviour {
             transform.position += transform.forward * speed * Time.deltaTime;
         }
 
+        if(Vector3.Distance(transform.position, targetPositionRecalc) < 1f) {
+            Explode();
+        }
+
         transform.LookAt(targetPositionRecalc);
+
+        if(Time.time > launchTime + lifeTimeInSecs) {
+            Explode();
+        }
 
     }
 
     private void OnCollisionEnter(Collision other) {
         if(other.gameObject.CompareTag("Enemy")) {
             // Instantiate(explosionPrefab, other.GetContact(0).point, Quaternion.identity, null);
-            Instantiate(explosionPrefab, transform.position, Quaternion.identity, null);
-            Destroy(gameObject);
+            Explode();
         }
+    }
+
+    private void Explode() {
+        Instantiate(explosionPrefab, transform.position + (transform.forward * 5f), Quaternion.identity, null);
+        Destroy(gameObject);
     }
 #endregion
 
@@ -69,6 +84,7 @@ public class WeaponTorpedo : MonoBehaviour {
         // }
         target = GameObject.FindGameObjectsWithTag("Enemy")[0].transform;
         targetPositionRecalc = target.position - (target.up * 5f);
+        targetPositionRecalc = target.position + (target.forward * UnityEngine.Random.Range(-50f, 50f)); //random horizontal
         isTargetAcquired = true;
 
     }

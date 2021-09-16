@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/zStandard URP Assets/Scenes/SampleScene.unity
-    guid: d1c3109bdb54ad54c8a2b2838528e640
+    path: Assets/_Naval Warfare/Scenes/Main Menu.unity
+    guid: 07b65b9f7098f384fa05625bc2c47e43
+  - enabled: 1
+    path: Assets/_Naval Warfare/Scenes/Mission Generator.unity
+    guid: 10adef64cfe0d504a8f65b1fd0a82adf
+  - enabled: 1
+    path: Assets/_Naval Warfare/Scenes/Sandbox.unity
+    guid: 5236ea6c4cea35d48bc8945a907eb41a
   m_configObjects: {}
